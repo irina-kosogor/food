@@ -225,36 +225,39 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Forms
 
-  const forms = document.querySelectorAll('form');
+  const forms = document.querySelectorAll("form");
 
   const message = {
-    loading: "Loading",
+    loading: "img/form/spinner.svg",
     success: "Thank you! We will get in touch with you soon",
-    failure: "Something went wrong"
+    failure: "Something went wrong",
   };
 
-  forms.forEach(form => postData(form));
+  forms.forEach((form) => postData(form));
 
   // XMLHttpRequest is used for the learning objectives
 
   function postData(form) {
-    form.addEventListener('submit', (event) => {
+    form.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const statusMessage = document.createElement('div');
-      statusMessage.classList.add('status');
-      statusMessage.textContent = message.loading;
-      form.append(statusMessage);
+      const statusMessage = document.createElement("img");
+      statusMessage.src = message.loading;
+      statusMessage.style.cssText = `
+        display: block;
+        margin: 0 auto;
+      `;
+      form.insertAdjacentElement('afterend', statusMessage);
 
       const request = new XMLHttpRequest();
-      request.open('POST', 'server.php');
+      request.open("POST", "server.php");
 
       request.setRequestHeader("Content-type", "application/json");
       const formData = new FormData(form);
 
       const object = {};
 
-      formData.forEach(function(value, key) {
+      formData.forEach(function (value, key) {
         object[key] = value;
       });
 
@@ -262,23 +265,46 @@ window.addEventListener("DOMContentLoaded", () => {
 
       request.send(json);
 
-      request.addEventListener('load', () => {
+      request.addEventListener("load", () => {
         if (request.status === 200) {
           console.log(request.response);
-          statusMessage.textContent = message.success;
+          showThanksModal(message.success);
+          statusMessage.remove();
           form.reset();
-          setTimeout(() => {
-            statusMessage.remove();
-          }, 5000);
         } else {
-          statusMessage.textContent = message.failure;
+          showThanksModal(message.failure);
         }
-
       });
-      
     });
   }
 
-  
-});
+  function showThanksModal(message) {
+    const prevModalDialog = document.querySelector(".modal__dialog");
 
+    prevModalDialog.classList.add("hide");
+    showModal();
+
+    const thanksModal = document.createElement("div");
+    thanksModal.classList.add("modal__dialog");
+
+    thanksModal.innerHTML = `
+        <div class="modal__content">
+          <div class="modal__close" data-close>&times;</div>
+          <div class="modal__title">${message}</div>
+        </div>
+    `;
+
+    document.querySelector(".modal").append(thanksModal);
+
+    setTimeout(() => {
+      thanksModal.remove();
+      // prevModalDialog.classList.add('show');
+      prevModalDialog.classList.remove("hide");
+      hideModal();
+    }, 4000);
+  }
+
+  // fetch('http://localhost:3000/menu')
+  //   .then(data => data.json())
+  //   .then(result => console.log(result));
+});
