@@ -205,12 +205,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // First variant of dynamically building menu cards
   
-  getResource('http://localhost:3000/menu')
-    .then(data => {
-      data.forEach(({img, altimg, title, descr, price}) => {
-        new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-      });
-  });
+  // getResource('http://localhost:3000/menu')
+  //   .then(data => {
+  //     data.forEach(({img, altimg, title, descr, price}) => {
+  //       new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+  //     });
+  // });
+
+  //GET request via AXIOS library
+
+  axios.get('http://localhost:3000/menu')
+  .then(data => {
+        data.data.forEach(({img, altimg, title, descr, price}) => {
+          new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        });
+    });  
 
   //Second variant of dynamically building menu cards
 
@@ -361,6 +370,5 @@ window.addEventListener("DOMContentLoaded", () => {
       hideModal();
     }, 4000);
   }
-
 
 });
