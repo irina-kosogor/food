@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Timer
 
-  const finalDate = new Date("2022-11-20");
+  const finalDate = new Date("2022-12-20");
 
   function getTimeRemaining(endtime) {
     let days, hours, minutes, seconds;
@@ -205,21 +205,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // First variant of dynamically building menu cards
   
-  // getResource('http://localhost:3000/menu')
-  //   .then(data => {
-  //     data.forEach(({img, altimg, title, descr, price}) => {
-  //       new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-  //     });
-  // });
+  getResource('http://localhost:3000/menu')
+    .then(data => {
+      data.forEach(({img, altimg, title, descr, price}) => {
+        new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+      });
+  });
 
   //GET request via AXIOS library
 
-  axios.get('http://localhost:3000/menu')
-  .then(data => {
-        data.data.forEach(({img, altimg, title, descr, price}) => {
-          new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-        });
-    });  
+  // axios.get('http://localhost:3000/menu')
+  // .then(data => {
+  //       data.data.forEach(({img, altimg, title, descr, price}) => {
+  //         new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+  //       });
+  //   });  
 
   //Second variant of dynamically building menu cards
 
@@ -371,4 +371,56 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 4000);
   }
 
+  // Offer Slider
+
+  let slideIndex = 1;
+  const prev = document.querySelector('.offer__slider-prev');
+  const next = document.querySelector('.offer__slider-next');
+  const current = document.querySelector('#current');
+  const total = document.querySelector('#total');
+  const slides = document.querySelectorAll('.offer__slide');
+  
+  showSlides(slideIndex);
+
+  if (slides.length < 10) {
+    total.textContent = `0${slides.length}`;
+  } else {
+    total.innerHTML = slides.length;
+  }
+  
+  function showSlides(n) {
+    if (n > slides.length) {
+      slideIndex = 1;
+    }
+    if (n < 1) {
+      slideIndex = slides.length;
+    }
+
+    // slides.forEach((item) => item.style.display = 'none');
+
+    // slides[slideIndex - 1].style.display = 'block'; 
+
+    slides.forEach((slide) => slide.classList.add("hide"));
+
+    slides[slideIndex - 1].classList.toggle("hide");
+
+    if (slides.length < 10) {
+      current.textContent = `0${slideIndex}`;
+    } else {
+      current.textContent = slideIndex;
+    }
+  }
+
+  function plusSlides(n) {
+    showSlides(slideIndex += n);
+  }
+
+  prev.addEventListener('click', function() {
+    plusSlides(-1);
+  });
+
+  next.addEventListener('click', function() {
+    plusSlides(1);
+  });
+  
 });
