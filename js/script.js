@@ -271,7 +271,7 @@ window.addEventListener("DOMContentLoaded", () => {
     return await res.json();
   };
 
-  // // XMLHttpRequest is used for the learning objectives
+  // XMLHttpRequest is used for the learning objectives
 
   // function postData(form) {
   //   form.addEventListener("submit", (event) => {
@@ -371,7 +371,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 4000);
   }
 
-  // Offer Slider
+  // Slider
 
   let slideIndex = 1;
   const prev = document.querySelector('.offer__slider-prev');
@@ -379,48 +379,44 @@ window.addEventListener("DOMContentLoaded", () => {
   const current = document.querySelector('#current');
   const total = document.querySelector('#total');
   const slides = document.querySelectorAll('.offer__slide');
-  
+
   showSlides(slideIndex);
 
   if (slides.length < 10) {
     total.textContent = `0${slides.length}`;
   } else {
-    total.innerHTML = slides.length;
+    total.textContent = total;
   }
   
   function showSlides(n) {
     if (n > slides.length) {
       slideIndex = 1;
     }
+
     if (n < 1) {
       slideIndex = slides.length;
     }
 
-    // slides.forEach((item) => item.style.display = 'none');
-
-    // slides[slideIndex - 1].style.display = 'block'; 
-
-    slides.forEach((slide) => slide.classList.add("hide"));
-
-    slides[slideIndex - 1].classList.toggle("hide");
-
-    if (slides.length < 10) {
+    if (slideIndex < 10) {
       current.textContent = `0${slideIndex}`;
     } else {
       current.textContent = slideIndex;
     }
-  }
 
+    slides.forEach(slide => slide.classList.add('hide'));
+    slides[slideIndex - 1].classList.toggle('hide');
+  }
+  
   function plusSlides(n) {
     showSlides(slideIndex += n);
   }
 
-  prev.addEventListener('click', function() {
+  next.addEventListener('click', () => {
+    plusSlides(1);
+  });
+
+  prev.addEventListener('click', () => {
     plusSlides(-1);
   });
 
-  next.addEventListener('click', function() {
-    plusSlides(1);
-  });
-  
 });
