@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //Timer
 
-  const finalDate = new Date("2022-11-20");
+  const finalDate = new Date("2023-01-20");
 
   function getTimeRemaining(endtime) {
     let days, hours, minutes, seconds;
@@ -225,7 +225,54 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Forms
 
-  
+  const forms = document.querySelectorAll("form");
+  const message = {
+    loading: "Is loading...",
+    success: "Success",
+    failure: "Failure"
+  };
+
+  // XMLHttpReqest is used for educational purposes
+
+  forms.forEach((item) => postData(item));
+
+  function postData(form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const statusMessage = document.createElement('div');
+      statusMessage.textContent = message.loading;
+      form.append(statusMessage);
+
+      const request = new XMLHttpRequest();
+      request.open("POST", "server.php");
+
+      request.setRequestHeader("Content-type", "application/json; charset=utf-8");
+      const formData = new FormData(form);
+      
+      const obj = {};
+      formData.forEach((value, key) => {
+        obj[key] = value;
+      });
+
+      const json = JSON.stringify(obj);
+
+      request.send(json);
+
+      request.addEventListener("load", () => {
+        if (request.status === 200) {
+          console.log(request.response);
+          statusMessage.textContent = message.success;
+          form.reset();
+          setTimeout(() => statusMessage.remove(), 2000);
+        } else {
+          statusMessage.textContent = message.failure;
+          form.reset();
+          setTimeout(() => statusMessage.remove(), 2000);
+        }
+      });
+    });
+  }
   
 });
 
