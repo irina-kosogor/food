@@ -193,43 +193,30 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  new MenuCard(
-    "img/tabs/vegy.jpg",
-    "vegy",
-    'Меню "Фитнес"',
-    'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    9,
-    ".menu .container",
-    "menu__item"
-  ).render();
+  const getResource = async (url) => {
+	const res = await fetch(url);
 
-  new MenuCard(
-    "img/tabs/elite.jpg",
-    "elite",
-    "Меню “Премиум”",
-    "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
-    12,
-    ".menu .container",
-    "menu__item"
-  ).render();
+	if (!res.ok) {
+		throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+	}
 
-  new MenuCard(
-    "img/tabs/post.jpg",
-    "post",
-    'Меню "Постное"',
-    "Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
-    14,
-    ".menu .container",
-    "menu__item"
-  ).render();
+	return await res.json();
+  };
+
+  getResource('http://localhost:3000/menu')
+  	.then(data => {
+		data.forEach(({img, altimg, title, descr, price}) => {
+			new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+		});
+	});
 
   // Forms
 
   const forms = document.querySelectorAll("form");
   const message = {
-    loading: 'img/form/spinner.svg',
+    loading: "img/form/spinner.svg",
     success: "Success",
-    failure: "Something went wrong"
+    failure: "Something went wrong",
   };
 
   // XMLHttpReqest is used for educational purposes
@@ -253,7 +240,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   //     request.setRequestHeader("Content-type", "application/json; charset=utf-8");
   //     const formData = new FormData(form);
-      
+
   //     const obj = {};
   //     formData.forEach((value, key) => {
   //       obj[key] = value;
@@ -275,7 +262,7 @@ window.addEventListener("DOMContentLoaded", () => {
   //     });
   //   });
   // }
-  
+
   // function showThanksModal(message) {
   //   const prevModalDialog = document.querySelector('.modal__dialog');
 
@@ -302,57 +289,60 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Fetch API
 
-  forms.forEach((item) => postData(item));
+  forms.forEach((item) => bindPostData(item));
 
-  function postData(form) {
+  const postData = async (url, data) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: data
+    });
+
+	return res.json();
+  };
+
+  function bindPostData(form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const statusMessage = document.createElement('img');
+      const statusMessage = document.createElement("img");
       statusMessage.src = message.loading;
       statusMessage.style.cssText = `
         display: block;
         margin: 0 auto;
       `;
-      form.insertAdjacentElement('afterend', statusMessage);
+      form.insertAdjacentElement("afterend", statusMessage);
 
       const formData = new FormData(form);
-      
-      const obj = {};
-      formData.forEach((value, key) => {
-        obj[key] = value;
-      });
 
-      fetch('server.php', {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify(obj)
-      })
-      .then(data => data.text())
-      .then(data => {
-        console.log(data);
-        showThanksModal(message.success);
-      })
-      .catch(() => {
-        showThanksModal(message.failure);
-      }).finally(() => {
-        form.reset();
-        statusMessage.remove();
-      });
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
+      postData('http://localhost:3000/requests', json)
+        // .then((data) => data.text()) //data transformation is no longer needed
+        .then((data) => {
+          console.log(data);
+          showThanksModal(message.success);
+        })
+        .catch(() => {
+          showThanksModal(message.failure);
+        })
+        .finally(() => {
+          form.reset();
+          statusMessage.remove();
+        });
     });
   }
-  
-  function showThanksModal(message) {
-    const prevModalDialog = document.querySelector('.modal__dialog');
 
-    prevModalDialog.classList.add('hide');
+  function showThanksModal(message) {
+    const prevModalDialog = document.querySelector(".modal__dialog");
+
+    prevModalDialog.classList.add("hide");
     showModal();
 
-    const thanksModal = document.createElement('div');
-    thanksModal.classList.add('modal__dialog');
+    const thanksModal = document.createElement("div");
+    thanksModal.classList.add("modal__dialog");
     thanksModal.innerHTML = `
       <div class="modal__content">
         <div data-close class="modal__close">&times;</div>
@@ -360,17 +350,13 @@ window.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
-    document.querySelector('.modal').append(thanksModal);
+    document.querySelector(".modal").append(thanksModal);
     setTimeout(() => {
       thanksModal.remove();
       // prevModalDialog.classList.add('show');
-      prevModalDialog.classList.remove('hide');
+      prevModalDialog.classList.remove("hide");
       hideModal();
     }, 4000);
   }
 
-  fetch('db.json')
-    .then(data => data.json())
-    .then(data => console.log(data));
 });
-
