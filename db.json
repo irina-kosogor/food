@@ -23,20 +23,6 @@
     }
   ],
   "requests": [
-    {
-      "name": "Irina Kosogor",
-      "phone": "+38 (067) 573-56-86",
-      "id": 1
-    },
-    {
-      "name": "Irina Kosogor",
-      "phone": "380675735686",
-      "id": 2
-    },
-    {
-      "name": "Irina Kosogor",
-      "phone": "+38 (067) 573-56-86",
-      "id": 3
-    }
+    
   ]
 }
