@@ -66,6 +66,10 @@ window.addEventListener('DOMContentLoaded', () => {
     return num < 10 ? `0${num}` : num;
   }
 
+  function deleteNotDigits(str) {
+    return +str.replace(/\D/g, '');
+  }
+
   total.textContent = addZero(slides.length);
   current.textContent = addZero(slideIndex);
 
@@ -80,10 +84,10 @@ window.addEventListener('DOMContentLoaded', () => {
   slides.forEach(slide => slide.style.width = width);
 
   next.addEventListener('click', () => {
-    if (offset == +width.slice(0, -2) * (slides.length - 1)) {
+    if (offset == deleteNotDigits(width) * (slides.length - 1)) {
       offset = 0;
     } else {
-      offset += +width.slice(0, -2);
+      offset += deleteNotDigits(width);
     }
     
     slidesField.style.transform = `translateX(-${offset}px)`;
@@ -100,9 +104,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   prev.addEventListener('click', () => {
     if (offset == 0) {
-      offset = +width.slice(0, -2) * (slides.length - 1);
+      offset = deleteNotDigits(width) * (slides.length - 1);
     } else {
-      offset -= +width.slice(0, -2);
+      offset -= deleteNotDigits(width);
     }
     
     slidesField.style.transform = `translateX(-${offset}px)`;
@@ -148,7 +152,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const slideTo = e.target.getAttribute('data-slide-to');
 
       slideIndex = slideTo;
-      offset = +width.slice(0, -2) * (slideTo - 1);
+      offset = deleteNotDigits(width) * (slideTo - 1);
 
       slidesField.style.transform = `translateX(-${offset}px)`;
 
