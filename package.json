@@ -21,6 +21,8 @@
   "homepage": "https://github.com/irina-kosogor/food#readme",
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "es6-promise": "^4.2.8",
+    "es6-promise-polyfill": "^1.2.0",
     "json-server": "^0.17.1"
   },
   "devDependencies": {
