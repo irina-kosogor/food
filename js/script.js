@@ -1,4 +1,4 @@
-import "es6-promise/auto";
+ import "es6-promise/auto";
 import calculator from "./modules/calculator";
 import cards from "./modules/cards";
 import forms from "./modules/forms";
